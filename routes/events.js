@@ -17,7 +17,6 @@ router.use(validateJWT);
 // /api/events
 router.get(
   "/",
-  [],
   getEvents
 );
 
@@ -34,13 +33,17 @@ router.post(
 
 router.put(
   "/:id",
-  [],
+  [
+    check('title', 'El título es obligatorio').not().isEmpty(),
+    check('start', 'La fecha de inicio es obligatoria').custom(isDate),
+    check('end', 'La fecha de finalización es obligatoria').custom(isDate),
+    validateProps
+  ],
   updateEvent
 );
 
 router.delete(
   "/:id",
-  [],
   deleteEvent
 );
 
