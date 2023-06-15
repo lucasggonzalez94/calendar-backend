@@ -37,15 +37,40 @@ const registerUser = async (req, res = response) => {
   }
 };
 
-const loginUser = (req, res = response) => {
+const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
+  
+  try {
+    let user = await User.findOne({ email });
 
-  res.json({
-    ok: true,
-    msg: "Login",
-    email,
-    password,
-  });
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'El usuario y contraseña no son correctos'
+      })
+    }
+
+    const validPassword = bcrypt.compareSync( password, user.password );
+
+    if (!validPassword) {
+      return res.status(400).json({
+        of: false,
+        msg: 'Contraseña incorrecta'
+      });
+    };
+    
+    res.json({
+      ok: true,
+      uid: user._id,
+      name: user.name
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Por favor hable con el administrador'
+    });
+  }
 };
 
 const refreshToken = (req, res = response) => {
