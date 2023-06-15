@@ -4,6 +4,7 @@ const router = Router();
 
 const { registerUser, loginUser, refreshToken } = require('../controllers/auth');
 const validateProps = require('../middlewares/validateProps');
+const validateJWT = require('../middlewares/validateJWT');
 
 // /api/auth
 router.post(
@@ -27,6 +28,10 @@ router.post(
   registerUser
 );
 
-router.get('/refresh', refreshToken);
+router.get(
+  '/refresh',
+  validateJWT,
+  refreshToken
+);
 
 module.exports = router;
